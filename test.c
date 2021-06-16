@@ -1,30 +1,25 @@
 #include <stdio.h>
-#include <string.h>
- 
-int main ()
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+int main(int argc,char *argv[])
 {
-   char str1[15];
-   char str2[15];
-   int ret;
- 
- 
-   strcpy(str1, "abcdef");
-   strcpy(str2, "abcd");
- 
-   ret = strcmp(str1, str2);
- 
-   if(ret < 0)
-   {
-      printf("str1 小于 str2");
-   }
-   else if(ret > 0) 
-   {
-      printf("str1 大于 str2");
-   }
-   else 
-   {
-      printf("str1 等于 str2");
-   }
-   
-   return(0);
+	printf("hello world (pid:%d)\n",(int) getpid());
+	int rc = fork();
+	if(rc < 0)
+	{
+		fprintf(stderr,"fork failed\n");
+		exit(1);
+	}
+	else if(rc == 0)
+	{
+		printf("hello ,I am child (pid:%d)\n",(int) getpid());
+	}
+	else
+	{
+		int wc = wait(NULL);
+		printf("hello,I am parent of %d(wc:%d) (pid:%d)\n",rc,wc,(int)getpid());
+	}
+	return 0;
 }
